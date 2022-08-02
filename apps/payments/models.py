@@ -5,7 +5,7 @@ from apps.accounts.models import Student, Sponsor
 class Sponsorship(models.Model):
     sponsor = models.ForeignKey(Sponsor, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    amount = models.IntegerField(null=False, blank=False)
+    amount = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
