@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from apps.accounts.models import University, Student, Sponsor, TypeSponsor
 from apps.accounts.validators import phone_number, full_name
-
+from rest_framework import validators
 
 class UniversitySerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,3 +23,29 @@ class StudentSerializer(serializers.ModelSerializer):
             'full_name': {'validators': [full_name]},
             'phone_number': {'validators': [phone_number]},
         }
+
+
+
+class SponsorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sponsor
+        fields = [
+            'id', 'full_name', 'phone_number', 'balance', 'sponsored', 'status',
+            'sponsor_type', 'company',  'created_at', 'updated_at'
+            ]
+        extra_kwargs = {
+            'phone_number': {'allow_null': False, 'required': True, 'validators': [phone_number]},
+            'full_name': {'allow_null': False, 'required': True, 'validators': [full_name]},
+            'sponsored': {'read_only': True},
+        }
+    
+    def create(self, validated_data):
+        sponsor_type = validated_data['sponsor_type']
+        if sponsor_type == TypeSponsor.YURIDIK:
+            if validated_data['company']:
+                sponsor = Sponsor.objects.create(**validated_data)
+                return sponsor
+            else:
+                raise validators.ValidationError("Tashlikot nomini kiriting")
+        sponsor = Sponsor.objects.create(**validated_data)
+        return sponsor

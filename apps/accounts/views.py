@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from apps.accounts.serializers import UniversitySerializer, StudentSerializer
+from apps.accounts.serializers import UniversitySerializer, StudentSerializer, SponsorSerializer
 from apps.accounts.models import University, Student, Sponsor
 from rest_framework.permissions import IsAdminUser
 from apps.accounts.pagination import CustomPagination
@@ -20,3 +20,12 @@ class StudentViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ["first_name", "last_name"]
     filterset_fields = ["degree", "university"]
+
+
+class SponsorViewSet(viewsets.ModelViewSet):
+    queryset = Sponsor.objects.all()
+    serializer_class = SponsorSerializer
+    pagination_class = CustomPagination
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    search_fields = ["full_name", "company"]
+    filterset_fields = ["balance", "status", "sponsored"]
