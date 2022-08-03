@@ -7,5 +7,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('apps.authentication.urls')),
     path('api-auth/', include('rest_framework.urls')),
-    path('', include('config.router')),
+    path('api/v1/', include('config.router')),
 ]
