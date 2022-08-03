@@ -2,7 +2,7 @@ from rest_framework import serializers
 from apps.accounts.serializers import StudentSerializer, SponsorSerializer
 from apps.accounts.models import Student, Sponsor
 from apps.payments.models import Sponsorship
-from apps.payments.validators import validate_payment, update_payment
+from apps.payments.validators import validate_payment
 from django.shortcuts import get_object_or_404
 from rest_framework.validators import ValidationError
 
@@ -41,11 +41,11 @@ class SponsorshipSerializer(serializers.ModelSerializer):
                 return instance
             else:
                 raise ValidationError(
-                    {"pull yetmadi": "Homiylik puli kontrakt pulidan oshib ketdi."}
+                    {"message": "Homiylik puli kontrakt pulidan oshib ketdi."}
                 )
         else:
             raise ValidationError(
                 {
-                    "pull yetmadi": f"Homiy balansida {money} sum pul mavjud emas."
+                    "message": f"Homiy balansida {money} sum pul mavjud emas."
                 }
             )
