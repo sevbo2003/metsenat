@@ -34,26 +34,3 @@ def validate_payment(validated_data):
                 "pull yetmadi": f"Homiy balansida {money} sum pul mavjud emas."
             }
         )
-
-
-def update_payment(data, validate_data):
-    student = get_object_or_404(Student, id=validate_data["student_id"])
-    sponsor = get_object_or_404(Sponsor, id=validate_data["sponsor_id"])
-    money = validate_data["amount"]
-
-    if money <= sponsor.balance:
-        if student.balance + money <= student.contract:
-            data.money = money
-            data.sponsor = sponsor
-            data.save()
-            return data
-        else:
-            raise ValidationError(
-                {"pull yetmadi": "Homiylik puli kontrakt pulidan oshib ketdi."}
-            )
-    else:
-        raise ValidationError(
-            {
-                "pull yetmadi": f"Homiy balansida {money} sum pul mavjud emas."
-            }
-        )
