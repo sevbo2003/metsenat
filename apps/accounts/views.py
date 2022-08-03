@@ -38,3 +38,10 @@ class SponsorViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ["full_name", "company"]
     filterset_fields = ["balance", "status", "sponsored"]
+
+    @action(detail=True, methods=['get'])
+    def sponsored(self, request, pk=None):
+        sponsor = self.get_object()
+        queryset = sponsor.sponsorship_set.all()
+        serializer = SponsorshipSerializer(queryset, many=True)
+        return Response(serializer.data)
