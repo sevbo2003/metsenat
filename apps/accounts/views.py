@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from apps.accounts.serializers import UniversitySerializer, StudentSerializer, SponsorSerializer
+from apps.accounts.serializers import UniversitySerializer, StudentSerializer, SponsorSerializer, DashboardSerializer
 from apps.payments.serializers import SponsorshipSerializer
 from apps.accounts.models import University, Student, Sponsor
 from apps.payments.models import Sponsorship
@@ -57,3 +57,7 @@ class DashboardView(viewsets.ViewSet):
             "asked": Student.objects.aggregate(Sum('contract'))['contract__sum'],
             "should_payed": Student.objects.aggregate(Sum('contract'))['contract__sum'] - Sponsorship.objects.aggregate(Sum('amount'))['amount__sum'],
         })
+    
+    @action(detail=False, methods=['get'])
+    def graph(self, request):
+        return Response(DashboardSerializer().data)
