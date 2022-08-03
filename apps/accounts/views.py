@@ -2,11 +2,13 @@ from rest_framework import viewsets
 from apps.accounts.serializers import UniversitySerializer, StudentSerializer, SponsorSerializer
 from apps.payments.serializers import SponsorshipSerializer
 from apps.accounts.models import University, Student, Sponsor
+from apps.payments.models import Sponsorship
 from apps.accounts.pagination import CustomPagination
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.db.models import Sum
 
 
 class UniversityViewSet(viewsets.ModelViewSet):
@@ -45,3 +47,13 @@ class SponsorViewSet(viewsets.ModelViewSet):
         queryset = sponsor.sponsorship_set.all()
         serializer = SponsorshipSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+
+class DashboardView(viewsets.ViewSet):
+    def list(self, request):
+        return Response({
+            "payed": Sponsorship.objects.aggregate(Sum('amount'))['amount__sum'],
+            "asked": Student.objects.aggregate(Sum('contract'))['contract__sum'],
+            "should_payed": Student.objects.aggregate(Sum('contract'))['contract__sum'] - Sponsorship.objects.aggregate(Sum('amount'))['amount__sum'],
+        })
